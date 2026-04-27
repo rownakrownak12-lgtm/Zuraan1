@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zuraan | Luxury Fragrance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;600;800&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background: #fff; margin: 0; color: #1a1a1a; }
+        .brand-font { font-family: 'Cinzel', serif; }
+
+        #product-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px;
+            padding: 10px;
+        }
+        @media (min-width: 1024px) {
+            #product-list { grid-template-columns: repeat(4, 1fr); gap: 30px; padding: 0; }
+        }
+
+        .product-card { 
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+
+        /* নামের জন্য স্পেশাল ফিক্স - যেন কাটা না যায় */
+        .info-area {
+            padding: 15px 12px;
+            flex-grow: 1; 
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .full-name { 
+            display: block !important;
+            font-family: 'Cinzel', serif; /* লাক্সারি ফন্ট */
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 14px; /* সাইজ বাড়ানো হয়েছে */
+            line-height: 1.2;
+            color: #000;
+            margin-bottom: 8px;
+            min-height: 35px; /* ফিক্সড নূন্যতম জায়গা */
+            word-wrap: break-word;
+        }
+        @media (min-width: 768px) { .full-name { font-size: 18px; min-height: 45px; } }
+
+        .price-text {
+            color: #C5A059;
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        @media (min-width: 768px) { .price-text { font-size: 20px; } }
+
+        /* বাটন ডিজাইন */
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: auto;
+        }
+        .details-btn { border: 1.5px solid #000; color: #000; border-radius: 10px; font-weight: 600; padding: 10px 0; font-size: 10px; transition: 0.2s; }
+        .buy-btn { background: #000; color: #fff; border-radius: 10px; font-weight: 600; padding: 10px 0; font-size: 10px; transition: 0.2s; }
+        .buy-btn:hover { background: #C5A059; }
+
+        /* লোগো ফিক্স */
+        .nav-logo { height: 45px; width: auto; object-fit: contain; }
+        .footer-logo { height: 60px; width: auto; margin: 0 auto 15px; filter: brightness(1); } /* Invert সরানো হয়েছে */
+    </style>
+</head>
+<body>
+
+    <nav class="fixed w-full z-50 top-0 bg-white/80 border-b py-3 backdrop-blur-lg">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <img src="logo.png" alt="Zuraan" class="nav-logo">
+            <div class="flex space-x-5 text-xl">
+                <a href="https://www.facebook.com/share/19vbLoMpfF/" target="_blank" class="text-black"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/zuraan_fragrance" target="_blank" class="text-black"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-12 text-center">
+        <img src="logo.png" alt="Zuraan" class="mx-auto h-28 md:h-40 mb-4">
+        <div class="h-[1px] w-20 bg-amber-600 mx-auto mb-4"></div>
+        <p class="brand-font text-amber-800 tracking-[0.3em] text-[10px] md:text-xs uppercase font-semibold">The Essence of Mystery</p>
+    </header>
+
+    <main class="container mx-auto px-2 md:px-10 mb-20">
+        <div id="product-list">
+            </div>
+    </main>
+
+    <footer class="py-16 text-center bg-[#0a0a0a] text-white">
+        <img src="logo.png" alt="Zuraan" class="footer-logo">
+        <p class="brand-font text-xl tracking-widest mb-4">ZURAAN</p>
+        <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em]">© 2026 Zuraan Signature. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const MY_NUMBER = "8801876395185"; 
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSPO-no79a_tO4Kxqg-BxwLtn4Hp8AopALY87ht3IVldUlM2OGGzZg5sMWhoD8E6WAoaHHJKptNmeMz/pub?output=csv";
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch(`${SHEET_CSV_URL}&cb=${Date.now()}`);
+                const data = await response.text();
+                const rows = data.split(/\r?\n/).map(row => {
+                    const matches = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                    return matches ? matches.map(val => val.replace(/^"|"$/g, '').trim()) : null;
+                }).filter(r => r && r.length >= 4);
+
+                const headers = rows[0].map(h => h.toLowerCase().trim());
+                const items = rows.slice(1);
+                const list = document.getElementById('product-list');
+                list.innerHTML = ''; 
+
+                items.forEach(item => {
+                    const get = (name) => item[headers.indexOf(name)] || "";
+                    const n = get('name');
+                    const p = get('price');
+                    const img = get('imgurl');
+                    
+                    if(n) {
+                        list.innerHTML += `
+                            <div class="product-card">
+                                <div class="aspect-[4/5] overflow-hidden">
+                                    <img src="${img}" class="w-full h-full object-cover">
+                                </div>
+                                <div class="info-area">
+                                    <h3 class="full-name">${n}</h3>
+                                    <p class="price-text">${p} TK</p>
+                                    <div class="btn-group">
+                                        <button class="details-btn uppercase">Details</button>
+                                        <button class="buy-btn uppercase">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (err) { console.error(err); }
+        }
+        window.onload = fetchProducts;
+    </script>
+</body>
+</html>
