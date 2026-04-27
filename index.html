@@ -8,64 +8,70 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;600&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #fff; margin: 0; }
-        .brand-font { font-family: 'Cinzel', serif; }
         
-        /* কার্ড ফিক্স: হাইট হবে অটো, যাতে নাম অনুযায়ী কার্ড লম্বা হতে পারে */
-        .product-card { 
-            transition: 0.3s; 
-            border-radius: 1.2rem; 
-            border: 1px solid #eee; 
-            background: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100%; /* গ্রিডের সমান রাখার জন্য */
-            min-height: max-content; 
-        }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        body { font-family: 'Inter', sans-serif; background: #fff; margin: 0; color: #1a1a1a; }
+        .brand-font { font-family: 'Cinzel', serif; }
 
-        /* নাম দেখানোর মাস্টার ফিক্স */
-        .title-section {
-            padding: 10px 5px;
-            width: 100%;
-            display: block;
-            min-height: 60px; /* নূন্যতম একটা জায়গা রাখা হলো */
+        /* পিসি এবং মোবাইলে গ্রিড ফিক্স */
+        #product-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px;
+        }
+        @media (min-width: 1024px) {
+            #product-list { grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        }
+
+        /* কার্ড লজিক: নাম বড় হলে নিজে থেকে লম্বা হবে */
+        .product-card { 
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+            height: 100%;
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+
+        .info-area {
+            padding: 15px 10px;
+            flex-grow: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; 
             text-align: center;
         }
 
         .full-name { 
             display: block !important;
-            white-space: normal !important; /* লাইন ভাঙবে */
+            white-space: normal !important;
             word-wrap: break-word !important;
-            overflow: visible !important;
-            line-height: 1.3 !important;
-            text-align: center;
-            text-transform: uppercase;
+            line-height: 1.4;
             font-weight: 800;
-            color: #111;
-            font-size: 11px; 
-            max-height: none !important; /* কোনো লিমিট থাকবে না */
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 10px;
+            color: #000;
         }
         @media (min-width: 768px) { .full-name { font-size: 15px; } }
 
-        .combo-badge { background: #C5A059; color: white; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-top: 5px; display: inline-block; }
+        .combo-badge { background: #C5A059; color: #fff; font-size: 8px; padding: 2px 8px; border-radius: 50px; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
 
-        .gold-btn { background: #0A0A0A; color: white; border-radius: 0.6rem; cursor: pointer; border: none; font-weight: bold; }
+        .gold-btn { background: #000; color: #fff; border-radius: 8px; font-weight: bold; transition: 0.3s; border: none; }
         .gold-btn:hover { background: #C5A059; }
-        .details-btn { border: 1px solid #0A0A0A; color: #0A0A0A; border-radius: 0.6rem; background: transparent; cursor: pointer; font-weight: bold; }
+        .details-btn { border: 1px solid #000; color: #000; border-radius: 8px; font-weight: bold; transition: 0.3s; }
 
-        #universalModal { backdrop-filter: blur(10px); background: rgba(0,0,0,0.8); }
-        .address-box { width: 100%; border: 1px solid #ddd; border-radius: 0.8rem; padding: 10px; font-size: 14px; margin-top: 10px; resize: none; }
-        
-        .nav-logo { height: 35px; width: auto; }
-        .footer-logo { height: 50px; width: auto; margin: 0 auto; }
+        #universalModal { backdrop-filter: blur(8px); background: rgba(0,0,0,0.7); }
+        .address-box { width: 100%; border: 1px solid #ddd; border-radius: 10px; padding: 12px; font-size: 14px; margin-top: 10px; resize: none; }
     </style>
 </head>
 <body>
 
-    <nav class="fixed w-full z-50 top-0 bg-white/90 border-b py-2 backdrop-blur-md">
+    <nav class="fixed w-full z-50 top-0 bg-white/90 border-b py-3 backdrop-blur-md">
         <div class="container mx-auto px-4 flex justify-between items-center">
-            <img src="logo.png" alt="Zuraan" class="nav-logo">
+            <img src="logo.png" alt="Zuraan" style="height: 35px;" onerror="this.outerHTML='<span class=\'brand-font text-2xl font-bold\'>ZURAAN</span>'">
             <div class="flex space-x-4 text-xl">
                 <a href="https://www.facebook.com/share/19vbLoMpfF/" target="_blank" class="text-black"><i class="fab fa-facebook"></i></a>
                 <a href="https://www.instagram.com/zuraan_fragrance" target="_blank" class="text-black"><i class="fab fa-instagram"></i></a>
@@ -73,28 +79,31 @@
         </div>
     </nav>
 
-    <header class="pt-28 pb-10 text-center bg-[#fdfcfb]">
-        <img src="logo.png" alt="Zuraan" class="mx-auto h-20 md:h-28 mb-4">
-        <p class="brand-font text-amber-700 tracking-[0.2em] text-[10px] md:text-xs uppercase italic">Premium Fragrance Collection</p>
+    <header class="pt-32 pb-8 text-center bg-[#fdfcfb]">
+        <img src="logo.png" alt="Zuraan" class="mx-auto h-24 md:h-32 mb-3" onerror="this.style.display='none'">
+        <h1 class="brand-font text-4xl md:text-6xl font-bold uppercase mb-2">ZURAAN</h1>
+        <p class="brand-font text-amber-700 tracking-[0.2em] text-[10px] md:text-xs uppercase italic px-4">Signature Perfume Collection</p>
     </header>
 
-    <main class="container mx-auto px-2 md:px-8 py-8">
-        <div id="product-list" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
-            </div>
+    <main class="container mx-auto px-3 md:px-10 py-6 min-h-screen">
+        <div id="product-list">
+            <p class="text-center col-span-full py-20 text-gray-400">Loading Zuraan Inventory...</p>
+        </div>
     </main>
 
     <div id="universalModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-[1.5rem] p-6 shadow-2xl relative">
+        <div class="bg-white w-full max-w-sm rounded-[20px] p-6 shadow-2xl relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 text-3xl">&times;</button>
             <h2 id="modalTitle" class="brand-font text-xl mb-2 border-b pb-2"></h2>
             <div id="modalContent" class="text-gray-700 text-sm"></div>
-            <button id="modalActionBtn" class="gold-btn w-full py-4 uppercase text-xs tracking-widest font-bold mt-4"></button>
+            <button id="modalActionBtn" class="gold-btn w-full py-4 uppercase text-xs tracking-widest mt-4 font-bold"></button>
         </div>
     </div>
 
-    <footer class="py-12 text-center bg-black text-white">
-        <img src="logo.png" alt="Zuraan" class="footer-logo mb-4 brightness-0 invert">
-        <p class="text-[9px] text-gray-400 uppercase tracking-widest italic px-4">Authentic Luxury Fragrance | Bangladesh</p>
+    <footer class="py-10 text-center bg-black text-white mt-10">
+        <img src="logo.png" alt="Zuraan" class="mx-auto h-12 mb-4 brightness-0 invert" onerror="this.style.display='none'">
+        <h2 class="brand-font text-2xl mb-2">ZURAAN</h2>
+        <p class="text-[9px] text-gray-500 uppercase tracking-widest italic px-4">© 2026 Zuraan Signature. All Rights Reserved.</p>
     </footer>
 
     <script>
@@ -127,19 +136,19 @@
                     if(n) {
                         list.innerHTML += `
                             <div class="product-card">
-                                <div class="h-44 md:h-80 overflow-hidden bg-gray-100">
+                                <div class="aspect-[4/5] overflow-hidden bg-gray-50">
                                     <img src="${img}" class="w-full h-full object-cover">
                                 </div>
-                                <div class="p-3 flex-grow flex flex-col justify-between">
-                                    <div class="title-section">
+                                <div class="info-area">
+                                    <div>
                                         <h3 class="brand-font full-name">${n}</h3>
                                         ${isCombo ? '<span class="combo-badge">Combo Pack</span>' : ''}
                                     </div>
-                                    <div class="mt-2">
-                                        <p class="text-amber-700 font-bold text-sm md:text-xl text-center mb-3">${p} TK</p>
+                                    <div class="mt-4">
+                                        <p class="text-amber-700 font-black text-sm md:text-xl mb-3 text-center">${p} TK</p>
                                         <div class="grid grid-cols-2 gap-2 w-full">
-                                            <button onclick="openDetails('${n}', '${det}')" class="details-btn py-2 text-[8px] md:text-[11px]">DETAILS</button>
-                                            <button onclick="openOrder('${n}', '${p}', '${d}')" class="gold-btn py-2 text-[8px] md:text-[11px]">BUY NOW</button>
+                                            <button onclick="openDetails('${n}', '${det}')" class="details-btn py-2 text-[8px] md:text-[10px] uppercase">Details</button>
+                                            <button onclick="openOrder('${n}', '${p}', '${d}')" class="gold-btn py-2 text-[8px] md:text-[10px] uppercase">Buy Now</button>
                                         </div>
                                     </div>
                                 </div>
@@ -154,7 +163,8 @@
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalContent').innerText = info || "Premium Fragrance by Zuraan Signature.";
             const btn = document.getElementById('modalActionBtn');
-            btn.innerText = "Close"; btn.onclick = closeModal;
+            btn.innerText = "Back to Store";
+            btn.onclick = closeModal;
             document.getElementById('universalModal').classList.remove('hidden');
         }
 
@@ -164,21 +174,21 @@
             const total = p + d;
             document.getElementById('modalTitle').innerText = "Order Confirmation";
             document.getElementById('modalContent').innerHTML = `
-                <div class="py-2 border-b">
-                    <p class="flex justify-between"><span>${name}</span> <b>${p} TK</b></p>
-                    <p class="flex justify-between text-red-500"><span>Delivery Charge:</span> <b>+ ${d} TK</b></p>
-                    <p class="flex justify-between mt-2 text-lg font-bold border-t pt-2 text-amber-700"><span>Grand Total:</span> <span>${total} TK</span></p>
+                <div class="py-2 border-b space-y-1">
+                    <p class="flex justify-between text-sm"><span>${name}</span> <span>${p} TK</span></p>
+                    <p class="flex justify-between text-sm text-red-500"><span>Delivery:</span> <span>+ ${d} TK</span></p>
+                    <p class="flex justify-between mt-3 text-lg font-bold border-t pt-2 text-amber-700"><span>Total Bill:</span> <span>${total} TK</span></p>
                 </div>
                 <div class="mt-4">
                     <label class="text-[10px] font-bold text-gray-400 uppercase">Shipping Address:</label>
-                    <textarea id="customerAddress" class="address-box focus:border-amber-500 outline-none" rows="3" placeholder="আপনার নাম, মোবাইল এবং পূর্ণ ঠিকানা দিন..."></textarea>
+                    <textarea id="customerAddress" class="address-box focus:border-amber-600 outline-none" rows="3" placeholder="আপনার নাম, মোবাইল এবং পূর্ণ ঠিকানা লিখুন..."></textarea>
                 </div>
             `;
             const btn = document.getElementById('modalActionBtn');
             btn.innerText = "Confirm on WhatsApp";
             btn.onclick = () => {
                 const address = document.getElementById('customerAddress').value;
-                if(!address) { alert("দয়া করে ঠিকানা লিখুন!"); return; }
+                if(!address) { alert("দয়া করে পূর্ণ ঠিকানা দিন।"); return; }
                 const msg = `আসসালামু আলাইকুম Zuraan!\n\n🛍️ *নতুন অর্ডার:*\nপ্রোডাক্ট: ${name}\nমোট বিল: ${total} TK\n\n📍 *ঠিকানা:*\n${address}`;
                 window.open(`https://wa.me/${MY_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
             };
